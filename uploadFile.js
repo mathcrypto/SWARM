@@ -5,6 +5,9 @@ var multer = require('multer');
 var upload = multer({
 	dest: 'uploads/'
 });
+
+var Web3 = require('web3');
+var web3 = new Web3();
 web3.setProvider(new web3.providers.HttpProvider("http://192.168.1.104:8545"));
 var swarm = require("swarm-js").at("http://192.168.1.104:8500");
 router.post('/', upload.single('file'), function(req, res, next) {
