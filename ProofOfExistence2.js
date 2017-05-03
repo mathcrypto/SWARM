@@ -1,9 +1,8 @@
 
 var express = require('express');
 var fs = require('fs');
-var partial = require('express-partial');
 var solc = require('solc');
-var wstream = fs.createWriteStream('receipt.txt');
+var randomstring = require("randomstring");
 var router = express.Router();
 var cryptojs = require("crypto-js");
 var sha256 = require("crypto-js/sha256");
@@ -47,7 +46,7 @@ router.post('/', upload.single('file'), function(req, res, next) {
 
 var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
-    password = 'd6F3Efeq';
+    password = randomstring.generate(8);
  
 function encrypt(buffer){
   var cipher = crypto.createCipher(algorithm,password);
