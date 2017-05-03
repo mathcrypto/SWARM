@@ -21,7 +21,8 @@ res.status(500).send('ko');
 return;
 }
 
-
+var Key = content.substring(content.indexOf("Key") + "Key".length, content.indexOf("SwarmHash"));
+						         Key = Key.slice(4, 12).toString();
 
   var filehash = content.substring(content.indexOf("SwarmHash") + "SwarmHash".length, content.indexOf("}"));
   filehash = filehash.slice(4, 68).toString();
@@ -29,12 +30,28 @@ return;
 console.log("filehash is" + filehash);
 
 
-swarm.download(filehash).then( function (buffer) {
+swarm.download(filehash).then( function (file) {
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = Key;
+ 
+function encrypt(buffer){
+  var cipher = crypto.createCipher(algorithm,password);
+  var crypted = Buffer.concat([cipher.update(buffer),cipher.final()]);
+  return crypted;
+}
+ 
+function decrypt(buffer){
+  var decipher = crypto.createDecipher(algorithm,password);
+  var dec = Buffer.concat([decipher.update(buffer) , decipher.final()]);
+  return dec;
+}
+var Hash = decrypt(file);
 //console.log(buffer.toString());
 res.setHeader('Content-Disposition', 'attachment; filename=myFile.pdf');
 res.setHeader('Content-type', 'pdf');
 res.charset = 'utf-8';
-res.write(buffer);
+res.write(Hash);
 res.end();
 });
 
